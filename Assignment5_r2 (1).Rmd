@@ -1,0 +1,386 @@
+---
+title: "Assignment5"
+author: "Evans Muchiri"
+date: "3/9/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# install.packages("dplyr")
+# install.packages("DT")
+# install.packages("leaflet")
+# install.packages("ggplotly")
+# install.packages("plotly")
+# install.packages("reshape")
+# #source("https://.org/Lite.R")
+# 
+# # Default Install
+# neuro_install('MRIcloudT1volumetrics')
+# 
+# 
+#install.packages("devtools")
+# require(devtools)
+# devtools::install_github("bcaffo/MRIcloudT1volumetrics")
+
+
+#install.packages("MRIcloudT1volumetrics")
+# install.packages("tidyverse")
+# install.packages("ggplot2")
+# install.packages("Hmisc")
+# install.packages("knitr")
+# install.packages("d3heatmap")
+# install.packages("flexdashboard")
+
+#
+library(DT)
+library(leaflet)
+library(shiny)
+library(reshape)
+library(MRIcloudT1volumetrics)
+library(tidyverse)
+library(ggplot2)
+library(Hmisc)
+library(plotly)
+library(knitr)
+# library(d3heatmap)
+library(flexdashboard)
+library(reshape)
+# library(MRIcloudT1volumetrics)
+library(tidyverse)
+library(ggplot2)
+library(Hmisc)
+
+
+# 
+
+```
+
+## Assignment 5
+## Question 1
+
+1. Create a shiny app of your Hogwarts house progam from the previous HW. Submit both the code and a link to the published app on shinyapps.io
+
+https://emuchiri.shinyapps.io/HogwartsTheHouseApp/
+
+### Links to the Hogwarts House app
+
+``` {r hogshiyny, eval=FALSE, message=FALSE}
+https://emuchiri.shinyapps.io/HogwartsTheHouseApp/
+  
+
+```
+
+
+2. Recreate your plots from the previous assignment, except the mosaic plots, as interactive plotly graphics. Submit the Rmarkdown document and the html document.
+
+## Question 2 plot 1
+``` {r plotlyplots, warning=FALSE, echo=TRUE, eval=TRUE, message=FALSE}
+
+library(plotly)
+
+ds4phbme_raw=("https://raw.githubusercontent.com/bcaffo/ds4ph-bme/master/data/classInterests.txt")
+dat11=read.table(ds4phbme_raw, sep="", header=TRUE)
+class(dat11)
+
+summary(dat11)
+table(dat11)
+
+smry=dat11 %>% group_by(Program) %>% summarise(students_no=n())
+smry2=dat11 %>% group_by(Year) %>% summarise(students_no=n())
+
+smry
+smry2
+
+
+
+plot1=ggplot(smry, aes(x=Program,y=students_no, fill=Program))
+# plot1+geom_count()
+plot1=plot1+geom_bar(stat="identity")
+plot4=ggplotly(plot1)
+
+plot2=ggplot(smry2, aes(x=Year,y=students_no, fill=Year))
+# plot2+geom_count()
+plot2=plot2+geom_bar(stat="identity")
+plot5=ggplotly(plot2)
+plot4
+plot5
+
+
+
+```
+
+## Question 2 plot 2
+
+```{r ds4phbme5, eval=TRUE, echo=TRUE }
+# install.packages("pandas")
+# library(pandas)
+ # ds4phbme5_raw=("https://raw.githubusercontent.com/jhu-advdatasci/2018/master/data/KFF/healthcare-spending.csv")
+dat51=read.table(file="/cloud/project/healthcare-spending2.csv", sep="", header=TRUE)
+ attach(dat51)
+class(dat51)
+dim(dat51)
+colnames(dat51)
+
+dat52=dat51 %>%select("Location", "X1991__Total.Health.Spending", "X1992__Total.Health.Spending", "X1993__Total.Health.Spending", "X1994__Total.Health.Spending", "X1995__Total.Health.Spending", "X1996__Total.Health.Spending", "X1997__Total.Health.Spending", "X1998__Total.Health.Spending", "X1999__Total.Health.Spending" , "X2000__Total.Health.Spending" , "X2001__Total.Health.Spending", "X2002__Total.Health.Spending", "X2003__Total.Health.Spending", "X2004__Total.Health.Spending", "X2005__Total.Health.Spending", "X2006__Total.Health.Spending", "X2007__Total.Health.Spending", "X2008__Total.Health.Spending", "X2009__Total.Health.Spending", "X2010__Total.Health.Spending", "X2011__Total.Health.Spending", "X2012__Total.Health.Spending", "X2013__Total.Health.Spending", "X2014__Total.Health.Spending")
+
+
+dim(dat52)
+
+healthcare_data=dat52[2:52,]
+names(healthcare_data)=c("Locations", 1991:2014 )
+healthcare_spending2=melt(healthcare_data, id.var="Locations")
+
+names(healthcare_spending2)[names(healthcare_spending2)=="variable"] <- "Year"
+names(healthcare_spending2)[names(healthcare_spending2)=="value"] <- "HealthSpending"
+names(healthcare_spending2)
+
+
+healthcare_spending3=as.data.frame(healthcare_spending2)
+class(healthcare_spending3)
+# 
+# nlist=ncol(dat52)
+# yearlyspending=dat52[,2:nlist]
+
+# 
+plot55=ggplot(healthcare_spending3, aes(x=Year, y=HealthSpending, color=Locations )) 
+
+# gg_HealthCare = ggplot(HealthCare_data2Reshaped,aes(x=as.numeric(variable),y=value,color=State))
+
+plot55=plot55+geom_line(aes(group=Locations))
+
+plot55=plot55+geom_point()
+plot55=plot55+theme(axis.text.x = element_text(angle = 90))
+
+
+# plot55=plot55+ggtitle("Amount of Healthcare Spending")+ ylab("Health Care Spending")+xlab("Year")
+
+plot56=ggplotly(plot55)
+plot56
+
+# lot1+ggplot(dat52, mapping=aes(x=dat52[ ,3], y=Location))+geom_point(aes(color=factor(Location)))
+# 
+# plot551
+
+
+
+```
+
+## Quesiton 2 plot 3
+
+``` {r plotlyq6, eval=TRUE, echo=TRUE}
+#install.packages("pandas")
+# library(pandas)
+# ds4phbme5_raw=("https://raw.githubusercontent.com/jhu-advdatasci/2018/master/data/KFF/healthcare-spending.csv")
+dat51=read.table(file="/cloud/project/healthcare-spending2.csv", sep="", header=TRUE)
+class(dat51)
+dim(dat51)
+colnames(dat51)
+
+dat62=dat51 %>%select("Location", "X1991__Total.Health.Spending", "X1992__Total.Health.Spending", "X1993__Total.Health.Spending", "X1994__Total.Health.Spending", "X1995__Total.Health.Spending", "X1996__Total.Health.Spending", "X1997__Total.Health.Spending", "X1998__Total.Health.Spending", "X1999__Total.Health.Spending" , "X2000__Total.Health.Spending" , "X2001__Total.Health.Spending", "X2002__Total.Health.Spending", "X2003__Total.Health.Spending", "X2004__Total.Health.Spending", "X2005__Total.Health.Spending", "X2006__Total.Health.Spending", "X2007__Total.Health.Spending", "X2008__Total.Health.Spending", "X2009__Total.Health.Spending", "X2010__Total.Health.Spending", "X2011__Total.Health.Spending", "X2012__Total.Health.Spending", "X2013__Total.Health.Spending", "X2014__Total.Health.Spending")
+
+
+
+rowmean_state=function (data_health) {
+  as.matrix(data_health)
+  nlists2=ncol(data_health)
+  mean_state_spend=round(apply(data_health[,2:nlists2],1, mean),0)
+
+  as.data.frame(mean_state_spend)
+  Location2=data_health[,1]
+  
+  result=cbind(Location2, mean_state_spend)
+as.data.frame(result)
+  return(result)
+}
+
+mean_state_spending=as.data.frame(rowmean_state(dat62))
+                                  
+mean_state_spending2=mean_state_spending[2:52,]
+dim(mean_state_spending2)
+
+#   
+#   dat62=dat62 %>% mean(as.integer(dat52[,2:ncol(dat52)])) %>% 
+#   mutate(mean_spending=mean(dat52[,2:ncol(dat52)])) %>%
+#   barplot(Location, mean_spending)
+# 
+
+plot611=ggplot(mean_state_spending2, aes(Location2,mean_state_spend, fill=Location2))
+plot611=plot611+geom_bar(stat="identity")+labs(x="States", y="Mean Health Spend")
+plot611=plot611+theme(axis.text.x = element_text(angle = 90))
+#theme(axis.text.x = element_text(), axis.text.y = element_text())
+plot612=ggplotly(plot611)
+plot612
+
+
+```
+
+
+## Question 3
+3. Create a shiny app where a user enters in their height and weight and it returns BMI. Allow them to enter height and weight in feet or meters and lbs or kgs. Submit both the code and a link to the hosted app.
+
+https://emuchiri.shinyapps.io/BMICalc/
+
+
+``` {r BMICalc, message=FALSE, eval=FALSE}
+https://emuchiri.shinyapps.io/BMICalc/
+  
+
+```
+
+
+
+## Question 5
+5. Create a Rmd and then html document that displays a leaflet plot with a marker for your favorite place in Baltimore.
+
+
+```{r plots_fav_Baltimore, echo=TRUE, warning=FALSE }
+
+library(leaflet)
+# spdf<-geojson_read("C:\\unhcr\\Statistics_Data_Officer\\response\\america_adm1.geojson", what="sp")
+
+
+walters_art=leaflet() %>%
+  addTiles() %>%
+  addMarkers(lat=39.324910, lng=-76.619500, 
+             popup="Walters Art Gallery")
+walters_art
+
+
+
+```
+
+
+## Question 4
+4. Create a flexdashboard app that uses the kirby21 data from the previous assigment. In the left panel the user can select the type and level (1 to 3) and in the right hand side it displays a ploty graphic of the average composition.
+
+```{r flexdash_kirby21, echo=TRUE, warning=FALSE, eval=TRUE}
+
+# library(flexdashboard)
+kirb_raw=("https://raw.githubusercontent.com/neuroconductor/kirby21.mricloud/master/inst/visit_1/127/kirby_3_1_ax_283Labels_M2_corrected_stats.txt")
+dat_kirby=readSubject(kirb_raw)
+
+dat11=dat_kirby[[1]]
+dat12=dat_kirby[[2]]
+dat13=dat_kirby[[3]]
+dat14=dat_kirby[[4]]
+dat15=dat_kirby[[5]]
+dat21=dat_kirby[[6]]
+dat22=dat_kirby[[7]]
+dat23=dat_kirby[[8]]
+dat24=dat_kirby[[9]]
+dat25=dat_kirby[[10]]
+
+
+ fina_mat_2=dat11 %>% select(roi, volume) %>%
+  mutate(intrac_volume=sum(volume)) %>%
+  mutate(intr_lessCSF=sum(volume[roi!="CSF"])) %>%
+  mutate(propo_intra=round((volume/intr_lessCSF*100),2))
+ 
+plotprop2=ggplotly(ggplot(fina_mat_2, aes(x=roi,y=propo_intra,fill=roi))+geom_bar(stat="identity")+theme(axis.text.x=element_text(angle = 90)))
+plotprop2
+
+inputPanel(
+  selectInput("type", label = "Type of brain summary:",
+              choices = c(1,2), selected = 1),
+
+  # sliderInput("type", label = "Type of brain summary:",
+  #             min = 1, max = 2, value = 1, step = 1),
+
+  sliderInput("level", label = "Level of summary:",
+              min = 1, max = 3, value = 1, step = 1),
+  # 
+  # numericInput("type", "Type of brain summary required:", 2, min = 1, max = 2, step=1),
+  # verbatimTextOutput("data_vect1"),
+  # 
+  # numericInput("level", "Level of brain summary required:", 3, min = 1, max = 2, step=1),
+  # verbatimTextOutput("data_vect2"),
+  
+  plotOutput("plotly22"),
+  verbatimTextOutput("data_vect1"),
+    verbatimTextOutput("data_vect2")
+
+)
+
+# 
+# data_vector=as.matrix.data.frame(as.integer((reactive({
+#     c(input$type, input$level)
+#   }))))
+
+
+renderPlot({
+  
+  output$data_vect1 <- renderText({ input$type })
+  output$data_vect2 <- renderText({ input$level })
+  
+# dat_mat=as.matrix.data.frame(input$type, input$level, nrow=2, byrow=TRUE)
+# output$data_vect1=abs((input$type))
+# output$data_vect2=abs((input$level))
+
+  
+  dat_mat=as.matrix.noquote(as.matrix.data.frame((c(output$data_vect1, output$data_vect2))))
+ 
+   colnames(dat_mat)[colnames(data) == "V1"] <- "input_vect"
+  
+  if (data_mat$input_vect[1,]==1 && data_mat$input_vect[2,]==1) {
+    fina_mat=dat11
+  }
+    if (data_mat$input_vect[1,]==1 && data_mat$input_vect[2,]==2) {
+    fina_mat=dat12
+  }
+    if (data_mat$input_vect[1,]==1 && data_mat$input_vect[2,]==3) {
+    fina_mat=dat13
+  }
+  
+  #   if (data_mat[1,]==1 && data_mat[2,]==4) {
+  #   fina_mat=dat14
+  # }
+  #   if (data_mat[1,]==1 && data_mat[2,]==5) {
+  #   fina_mat=dat15
+  # }
+
+    if (data_mat$input_vect[1,]==2 && data_mat$input_vect[2,]==1) {
+    fina_mat=dat21
+  }
+    if (data_mat$input_vect[1,]==2 && data_mat$input_vect[2,]==2) {
+    fina_mat=dat22
+  }
+  
+    if (data_mat$input_vect[1,]==2 && data_mat$input_vect[2,]==3) {
+    fina_mat=dat23
+    }
+  
+  # 
+  #   if (data_mat[1,]==2 && data_mat[2,]==4) {
+  #   fina_mat=dat23
+  # }
+  # 
+  # if (data_mat[1,]==2 && data_mat[2,]==5) {
+  #   fina_mat=dat23
+  # }
+  
+  fina_mat_1= fina_mat %>% select(roi, volume) %>%
+  mutate(intrac_volume=sum(volume)) %>%
+  mutate(intr_lessCSF=sum(volume[roi!="CSF"])) %>%
+  mutate(propo_intra=round((volume/intr_lessCSF*100),2))
+
+# 
+  
+   
+ggplotly(ggplot(fina_mat_1, aes(x=roi,y=propo_intra,fill=roi))+geom_bar(stat="identity")+theme(axis.text.x=element_text(angle = 90)))
+
+})
+
+
+
+
+```
+
+
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
